@@ -15,6 +15,7 @@ service workers are JS code.
 service Worker should be in a root folder to be able to use everywhere.
 create public > sw.js and you should register it in app.js file
 
+Service Worker only work on HTTPS, except localhost
 
-
-
+Caching wi th Service Workers 
+Cache API 

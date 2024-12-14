@@ -37,14 +37,27 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ],
+  ],"screenshots": [
+  {
+    "src": "/src/images/screenshots/screenshot.jpg",
+    "sizes": "606x1280",
+    "type": "image/png",
+    "form_factor": "narrow"
+  },
+  {
+    "src": "/src/images/screenshots/screenshot.jpg",
+    "sizes": "606x1280",
+    "type": "image/png",
+    "form_factor": "wide"
+  }
+],
   "start_url": "/index.html",
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#fff",
   "theme_color": "#3f51b5",
-  "description": "The final Project from the University 2024 UEHS",
+  "description": "The final Project from the University 2024 UEHS.",
   "dir": "ltr",
   "lang": "en-US"
 }
