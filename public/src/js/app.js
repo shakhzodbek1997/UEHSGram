@@ -1,4 +1,3 @@
-
 var deferredPrompt;
 
 if (!window.Promise) {
