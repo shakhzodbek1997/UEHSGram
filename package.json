@@ -12,7 +12,7 @@
     "web",
     "app"
   ],
-  "author": "Shakhzod Yuldoshov",
+  "author": "Shakhzod Yuldosh",
   "license": "ISC",
   "devDependencies": {
     "http-server": "^0.9.0"

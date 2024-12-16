@@ -1,9 +1,3 @@
-/**
- * setImmediate polyfill v1.0.1, supports IE9+
- * © 2014–2015 Dmitry Korobkin
- * Released under the MIT license
- * github.com/Octane/setImmediate
- */
 window.setImmediate || function () {'use strict';
 
   var uid = 0;
@@ -60,14 +54,6 @@ window.setImmediate || function () {'use strict';
 
 }();
 
-/**
- * Promise polyfill v1.0.10
- * requires setImmediate
- *
- * © 2014–2015 Dmitry Korobkin
- * Released under the MIT license
- * github.com/Octane/Promise
- */
 (function (global) {'use strict';
 
   var STATUS = '[[PromiseStatus]]';
