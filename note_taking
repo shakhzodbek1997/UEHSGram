@@ -1,0 +1,10 @@
+email Firebase: nikolaivaluev694@gmail.com
+
+Start in Locked Mode: 
+{
+  "rules": {
+    ".read": false,
+    ".write": false
+  }
+}
+

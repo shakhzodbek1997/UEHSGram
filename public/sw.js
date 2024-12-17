@@ -1,4 +1,4 @@
-var CACHE_STATIC_NAME = 'static-v13';
+var CACHE_STATIC_NAME = 'static-v15';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 var STATIC_FILES = [
   '/',
@@ -18,19 +18,18 @@ var STATIC_FILES = [
 ];
 
 // CLeaning/ Trimming the Cache
-function trimCache(cacheName, maxItems){
-  caches.open(cacheName)
-    .then(function(cache){
-      return cache.keys()
-        .then(function(keys){
-          if(keys.length > maxItems){
-            cache.delete(keys[0])
-              .then(trimCache(cacheName, maxItems));
-          }
-        });
-    })
-}
-
+// function trimCache(cacheName, maxItems) {
+//   caches.open(cacheName)
+//     .then(function (cache) {
+//       return cache.keys()
+//         .then(function (keys) {
+//           if (keys.length > maxItems) {
+//             cache.delete(keys[0])
+//               .then(trimCache(cacheName, maxItems));
+//           }
+//         });
+//     })
+// }
 self.addEventListener('install', function (event) {
   console.log('[Service Worker] Installing Service Worker ...', event);
   event.waitUntil(
@@ -61,23 +60,24 @@ self.addEventListener('activate', function (event) {
 function isInArray(string, array) {
   var cachePath;
   if (string.indexOf(self.origin) === 0) { // request targets domain where we serve the page from (i.e. NOT a CDN)
-    console.log('matched ', string);
+    console.log('matched', string);
     cachePath = string.substring(self.origin.length); // take the part of the URL AFTER the domain (e.g. after localhost:8080)
   } else {
     cachePath = string; // store the full request (for CDNs)
   }
   return array.indexOf(cachePath) > -1;
 }
+
 self.addEventListener('fetch', function (event) {
 
-  var url = 'https://httpbin.org/get';
+  var url = 'https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app/posts';
   if (event.request.url.indexOf(url) > -1) {
     event.respondWith(
       caches.open(CACHE_DYNAMIC_NAME)
         .then(function (cache) {
           return fetch(event.request)
             .then(function (res) {
-              trimCache(CACHE_DYNAMIC_NAME, 3); 
+              // trimCache(CACHE_DYNAMIC_NAME, 3);
               cache.put(event.request, res.clone());
               return res;
             });
@@ -98,7 +98,7 @@ self.addEventListener('fetch', function (event) {
               .then(function (res) {
                 return caches.open(CACHE_DYNAMIC_NAME)
                   .then(function (cache) {
-                    trimCache(CACHE_DYNAMIC_NAME, 3); 
+                    // trimCache(CACHE_DYNAMIC_NAME, 3);
                     cache.put(event.request.url, res.clone());
                     return res;
                   })
@@ -159,14 +159,14 @@ self.addEventListener('fetch', function (event) {
 //   );
 // });
 
-// Cache-only
+// Cache-only strategy
 // self.addEventListener('fetch', function (event) {
 //   event.respondWith(
 //     caches.match(event.request)
 //   );
 // });
 
-// Network-only
+// Network-only strategy
 // self.addEventListener('fetch', function (event) {
 //   event.respondWith(
 //     fetch(event.request)
