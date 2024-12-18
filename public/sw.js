@@ -82,12 +82,12 @@ self.addEventListener('fetch', function (event) {
       .then(function (res) {
         var clonedRes = res.clone();
         clearAllData('posts')
-          .then(function(){
+          .then(function () {
             return clonedRes.json();
           })
-          .then(function(data){
-            for(var key in data){
-              writeData('posts',data[key])
+          .then(function (data) {
+            for (var key in data) {
+              writeData('posts', data[key])
             }
           });
         return res;
@@ -182,3 +182,40 @@ self.addEventListener('fetch', function (event) {
 //     fetch(event.request)
 //   );
 // });
+
+//------ Syncing Data in the Service Worker-------
+self.addEventListener('sync', function(event) {
+  console.log('[Service Worker] Background syncing', event);
+  if (event.tag === 'sync-new-posts') {
+    console.log('[Service Worker] Syncing new Posts');
+    event.waitUntil(
+      readAllData('sync-posts')
+        .then(function(data) {
+          for (var dt of data) {
+            fetch('https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app/posts.json', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify({
+                id: dt.id,
+                title: dt.title,
+                location: dt.location,
+                image: 'https://media.istockphoto.com/id/1136437406/photo/san-francisco-skyline-with-oakland-bay-bridge-at-sunset-california-usa.jpg?s=612x612&w=0&k=20&c=JVBBZT2uquZbfY0njYHv8vkLfatoM4COJc-lX5QKYpE='
+              })
+            })
+              .then(function(res){
+                console.log('Sent data', res);
+                if(res.ok){
+                  deleteItemFromData('sync-posts', dt.id);  
+                }
+              })
+              .catch(function(err){
+                console.log('Error while sending data', err);
+              });
+          }
+        })
+    );
+  }
+});

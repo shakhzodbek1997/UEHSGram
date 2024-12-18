@@ -8,7 +8,7 @@ var locationInput = document.querySelector('#location');
 
 function openCreatePostModal() {
   // createPostArea.style.display = 'block';
-  // setTimeout(function(){
+  // setTimeout(function() {
     createPostArea.style.transform = 'translateY(0)';
   // }, 1);
   if (deferredPrompt) {
@@ -27,10 +27,10 @@ function openCreatePostModal() {
     deferredPrompt = null;
   }
 
-  // if('serviceWorker' in navigator){
-  //   navigator.serviceWorker.getRegistration()
+  // if ('serviceWorker' in navigator) {
+  //   navigator.serviceWorker.getRegistrations()
   //     .then(function(registrations) {
-  //       for(var i = 0; i < registrations.length; i++){
+  //       for (var i = 0; i < registrations.length; i++) {
   //         registrations[i].unregister();
   //       }
   //     })
@@ -38,7 +38,7 @@ function openCreatePostModal() {
 }
 
 function closeCreatePostModal() {
-  createPostArea.style.transform = 'translateY(100vh)'; 
+  createPostArea.style.transform = 'translateY(100vh)';
   // createPostArea.style.display = 'none';
 }
 
@@ -69,7 +69,7 @@ function createCard(data) {
   cardWrapper.className = 'shared-moment-card mdl-card mdl-shadow--2dp';
   var cardTitle = document.createElement('div');
   cardTitle.className = 'mdl-card__title';
-  cardTitle.style.backgroundImage = 'url(' + data.image + ')'; // getting data from firebase RTDB
+  cardTitle.style.backgroundImage = 'url(' + data.image + ')';   // getting data from firebase RTDB
   cardTitle.style.backgroundSize = 'cover';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
@@ -108,20 +108,41 @@ fetch(url)
     networkDataReceived = true;
     console.log('From web', data);
     var dataArray = [];
-    for(var key in data){
+    for (var key in data) {
       dataArray.push(data[key]);
     }
     updateUI(dataArray);
   });
   
-if ('indexDB' in window) {
+if ('indexedDB' in window) {
   readAllData('posts')
-  .then(function(data){
-    if(!networkDataReceived){
-      console.log('From Cache', data);
-      updateUI(data);
-    }
+    .then(function(data) {
+      if (!networkDataReceived) {
+        console.log('From cache', data);
+        updateUI(data);
+      }
+    });
+}
+
+// Fallback snd Data
+function sendData(){
+  fetch('https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app/posts.json', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      id: new Date().toISOString(),
+      title: titleInput.value,
+      location: locationInput.value,
+      image: 'https://media.istockphoto.com/id/1136437406/photo/san-francisco-skyline-with-oakland-bay-bridge-at-sunset-california-usa.jpg?s=612x612&w=0&k=20&c=JVBBZT2uquZbfY0njYHv8vkLfatoM4COJc-lX5QKYpE='
+    })
   })
+    .then(function(res){
+      console.log('Sent data', res);
+      updateUI();
+    })
 }
 
 form.addEventListener('submit', function(event){
@@ -133,26 +154,28 @@ form.addEventListener('submit', function(event){
   }
   closeCreatePostModal();
   
-  if('serviceWorker' in navigator && 'SyncManager' in window){
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
     navigator.serviceWorker.ready
-      .then(function(sw){
+      .then(function(sw) {
         var post = {
-          id: new Date().toString(), 
+          id: new Date().toISOString(),
           title: titleInput.value,
           location: locationInput.value
-        }
-        writeData('sync-posts', post )
-          .then(function(){
-            return sw.sync.register('sync-new-post');
+        };
+        writeData('sync-posts', post)
+          .then(function() {
+            return sw.sync.register('sync-new-posts');
           })
-          .then(function(){
-          var snackbarContainer = document.querySelector('#confirmation-toast');
-          var data = {message: 'Your Post was saved for syncing!'};
-          snackbarContainer.materialSnackbar.showSnackbar(data);
+          .then(function() {
+            var snackbarContainer = document.querySelector('#confirmation-toast');
+            var data = {message: 'Your Post was saved for syncing!'};
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
           })
-            .catch(function(err) {
-              console.log(err);
-            });
+          .catch(function(err) {
+            console.log(err);
+          });
       });
+  } else {
+    sendData();
   }
-})
+});
