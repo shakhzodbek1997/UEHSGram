@@ -2,7 +2,7 @@ importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
 
-var CACHE_STATIC_NAME = 'static-v25';
+var CACHE_STATIC_NAME = 'static-v35';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 var STATIC_FILES = [
   '/',
@@ -192,7 +192,7 @@ self.addEventListener('sync', function(event) {
       readAllData('sync-posts')
         .then(function(data) {
           for (var dt of data) {
-            fetch('https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app/posts.json', {
+            fetch('https://us-central1-uehsgram.cloudfunctions.net/storePostData', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -208,7 +208,10 @@ self.addEventListener('sync', function(event) {
               .then(function(res){
                 console.log('Sent data', res);
                 if(res.ok){
-                  deleteItemFromData('sync-posts', dt.id);  
+                  res.json()
+                    .then(function(resData){
+                      deleteItemFromData('sync-posts', resData.id); 
+                    });
                 }
               })
               .catch(function(err){

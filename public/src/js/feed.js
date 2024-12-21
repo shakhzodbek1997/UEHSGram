@@ -126,7 +126,7 @@ if ('indexedDB' in window) {
 
 // Fallback snd Data
 function sendData(){
-  fetch('https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app/posts.json', {
+  fetch('https://us-central1-uehsgram.cloudfunctions.net/storePostData', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
