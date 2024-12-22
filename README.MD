@@ -19,3 +19,9 @@ Service Worker only work on HTTPS, except localhost
 
 Caching wi th Service Workers 
 Cache API 
+
+
+using VAPID with webPush notification
+> npm install --save web-push   .. it alow us to generate VAPID keys and push messages
+configured > functions/package.json > scripts: { "web-push": "web-push" } 
+npm run web-push

@@ -45,12 +45,55 @@ function displayConfirmNotification() {
 
     navigator.serviceWorker.ready
       .then(function (swReg) {
-        swReg.showNotification('Successfully Subscribed( from Service Worker )!', options);
+        swReg.showNotification('Successfully Subscribed!', options);
       })
       .catch(function (err) {
         console.log('Service Worker not ready', err);
       });
   }
+}
+
+function configurePushSub(){
+  if(!('serviceWorker' in navigator)){
+    return;
+  }
+  var reg;
+  navigator.serviceWorker.ready
+    .then(function(swReg){
+      reg = swReg;
+      return swReg.pushManager.getSubscription();
+    })
+    .then(function(sub){
+      if(sub === null){
+        // Create a new Subscription
+        var vapidPublicKey = 'BPELivJlGUezg5W3ZgM9s5k6K3-PTYPNkSNJstNIwM71AAzxHG9amaaLcAUKHLhAv0ay4ZG3cUEQfrEPpPxrIm4';
+        var convertedVapidPublicKey = urlBase64ToUint8Array(vapidPublicKey);  
+        return reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: convertedVapidPublicKey
+        });
+      } else {
+        // We have a subscription
+      }
+    })
+      .then(function(newSub){
+        fetch('https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app/subscriptions.json', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept' : 'application/json'
+          },
+          body: JSON.stringify(newSub)
+        })
+      })
+      .then(function(res){
+        if(res.ok){
+          displayConfirmNotification();
+        }
+      })
+      .catch(function(err){
+        console.log(err);
+      });
 }
 
 //--- Ask Notification --
@@ -60,15 +103,16 @@ function askForNotificationPermission(){
       if(result !== 'granted'){
         console.log('No notification permission granted!');
       }else{
-        displayConfirmNotification();
+        configurePushSub();
+        // displayConfirmNotification();
       }
     });
 }
 
 // if browser supports notifications this will appear other view it will be visible
-if('Notification' in window){
-  for(var i = 0; i< enableNotificationsButtons.length; i++){
-    enableNotificationsButtons[i].computedStyleMap.display = 'inline-block';
+if('Notification' in window && 'serviceWorker' in navigator){
+  for(var i = 0; i < enableNotificationsButtons.length; i++){
+    enableNotificationsButtons[i].style.display = 'inline-block';
     enableNotificationsButtons[i].addEventListener('click', askForNotificationPermission);
   }
 }
