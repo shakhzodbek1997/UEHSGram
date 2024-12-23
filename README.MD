@@ -25,3 +25,40 @@ using VAPID with webPush notification
 > npm install --save web-push   .. it alow us to generate VAPID keys and push messages
 configured > functions/package.json > scripts: { "web-push": "web-push" } 
 npm run web-push
+
+functions> npm install --save uuid-v4
+
+----
+var gcconfig = {
+  projectId: 'uehsgram',
+  keyFilename: 'uehsgram-fb-key.json'
+  gcs.bucket('uehsgram.firebasestorage.app')
+};
+
+var gcs = require('@google-cloud/storage')(config);
+
+const serviceAccount = require("./uehsgram-fb-key.json");
+
+/ Set VAPID keys for Web Push
+webpush.setVapidDetails(
+  "mailto:yuldoshov.shakhzod@gmail.com",
+  "BPELivJlGUezg5W3ZgM9s5k6K3-PTYPNkSNJstNIwM71AAzxHG9amaaLcAUKHLhAv0ay4ZG3cUEQfrEPpPxrIm4", // Public Key
+  "Aokjsli1EL4re5poDZzZFiiA-h_wDDN0obhAUTc1LqE" // Private Key
+);
+
+
+workbox installed > >
+npm install --save-dev workbox-cli@^2
+----------------------------
+1. Installable
+2. Responsive
+3. Ask Permission to the Camera
+4. Camera Capturing
+5. GET location (Warsaw), ASKS Permission to Location
+6. # not storing in Firebase 
+7. Ask Permission to Notification
+8. Notification comes about subscription.
+9. 
+==============
+
+Workbox:

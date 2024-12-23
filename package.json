@@ -4,7 +4,8 @@
   "description": "The final Project from the University 2024 - 2025",
   "main": "index.js",
   "scripts": {
-    "start": "http-server -c-1"
+    "start": "http-server -c-1",
+    "generate-sw": "workbox inject:manifest"
   },
   "keywords": [
     "pwa",
@@ -15,6 +16,7 @@
   "author": "Shakhzod Yuldoshov",
   "license": "ISC",
   "devDependencies": {
-    "http-server": "^0.9.0"
+    "http-server": "^0.9.0",
+    "workbox-cli": "^2.1.3"
   }
 }

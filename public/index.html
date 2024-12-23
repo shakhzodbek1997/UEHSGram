@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="/src/css/app.css">
   <link rel="stylesheet" href="/src/css/feed.css">
   <link rel="manifest" href="/manifest.json">
-  <!-- For Safari-->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="UEHSGram">
@@ -26,7 +25,6 @@
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-144x144.png" sizes="144x144">
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-152x152.png" sizes="152x152">
   <link rel="apple-touch-icon" href="/src/images/icons/apple-icon-180x180.png" sizes="180x180">
-  <!--Internet Explorer (Edge)-->
   <meta name="msapplication-TileImage" content="/src/images/icons/app-icon-144x144.png">
   <meta name="msapplication-TileColor" content="#fff">
   <meta name="theme-color" content="#3f51b5">
@@ -67,6 +65,14 @@
     </div>
     <main class="mdl-layout__content mat-typography">
       <div id="create-post">
+        <video id="player" autoplay></video>
+        <canvas id="canvas" width="320px" height="240px"></canvas>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" id="capture-btn">Capture
+        </button>
+        <div id="pick-image">
+          <h6>Pick an Image instead</h6>
+          <input type="file" accept="image/*" id="image-picker">
+        </div>
         <form>
           <div class="input-section mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" type="text" id="title">
@@ -75,6 +81,11 @@
           <div class="input-section mdl-textfield mdl-js-textfield mdl-textfield--floating-label" id="manual-location">
             <input class="mdl-textfield__input" type="text" id="location">
             <label class="mdl-textfield__label" for="location" name="location">Location</label>
+          </div>
+          <div class="input-section">
+            <button class="mdl-button mdl-js-button mdl-button mdl-button--colored" type="button" id="location-btn">Get Location
+            </button>
+            <div class="mdl-spinner mdl-js-spinner is-active" id="location-loader"></div>
           </div>
           <br>
           <div>
@@ -93,7 +104,7 @@
       <img src="/src/images/main-image.jpg"
            srcset="/src/images/main-image-lg.jpg 1200w,
                    /src/images/main-image.jpg 900w,
-                   /src/images/main-image-sm.jpg 480w" 
+                   /src/images/main-image-sm.jpg 480w"
            alt="Explore the City"
            class="main-image">
       <div class="page-content">
