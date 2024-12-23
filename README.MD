@@ -1,4 +1,4 @@
-# UEHSGram
+# UEHSGram - Final Project for PWA [Semester 7] 
 
 ## 📋 Overview
 
