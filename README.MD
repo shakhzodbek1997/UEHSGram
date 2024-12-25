@@ -108,3 +108,33 @@ functions> npm install --save uuid-v4
 ==============
 
 Workbox:
+* OFFLINE CACHING
+* OFFLINE ANALYTICS
+* BACKGROUND SYNC
+
+Enhancing Workbox: 
+to minify
+> npm install --save-dev uglify-js  
+> Package.json 
+"scripts": {
+  "minify": "uglifyjs public/src/js/app.js -o public/src/js/app.min.js --compress --mangle && uglifyjs public/src/js/feed.js -o public/src/js/feed.min.js --compress --mangle && uglifyjs public/src/js/fetch.js -o public/src/js/fetch.min.js --compress --mangle && uglifyjs public/src/js/idb.js -o public/src/js/idb.min.js --compress --mangle && uglifyjs public/src/js/promise.js -o public/src/js/promise.min.js --compress --mangle && uglifyjs public/src/js/utility.js -o public/src/js/utility.min.js --compress --mangle",
+  "build": "npm run minify && npm run generate-sw"
+}
+ 
+
+>> finally 
+firebase deploy
+
+
+Sec - 9 Background Sync. allows you to one important thing, sync your data even if users offline sending it.
+in root folder:  > npm install -g firebase-tools
+                 > firebase inti  >are you ready? y > *functions:, *Hosting:
+
+Installing Firebase-admin and Cors by using this command in **functions** folder: 
+                 > npm install firebase-admin cors --save   then changed functions/index.js file 
+                 > firebase deploy ---->  
+
+                 Hosting URL: https://uehsgram.web.app 
+                 Project Console: https://console.firebase.google.com/project/uehsgram/overview
+new URL to send REQUEST:  Function URL (storePostData(us-central1)): https://us-central1-uehsgram.cloudfunctions.net/storePostData
+DatabaseURL:     https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app
