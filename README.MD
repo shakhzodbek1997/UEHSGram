@@ -138,3 +138,29 @@ Installing Firebase-admin and Cors by using this command in **functions** folder
                  Project Console: https://console.firebase.google.com/project/uehsgram/overview
 new URL to send REQUEST:  Function URL (storePostData(us-central1)): https://us-central1-uehsgram.cloudfunctions.net/storePostData
 DatabaseURL:     https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app
+
+
+------Push Notification ----
+THe coolest features Native apps can access and ca use? Push notifications, there is no better way of getting your users back into your application. You have your mobile phone in your pocket and suddenly it vibrates, you have a look at it and you see there is this new article you definitely have to read  in your favorite app. Well just tap on notification and  you are on the article. from  developer perspective, that's awesome, that's the best way to drive user engagement and re-engage users with your application. And from a user perspective, you get informed about things which matter to you, at least if it's done in a good way.
+
+if users have our web app, so the tab or the whole browser closed. there a service process, a background process of the Chrome browser will keep on running in the background even if the application is closed and we'll use our service worker to receive incoming push notifications, to alert the user.
+
+-------Notification API
+We used notification API to create and show new notifications, set a title, a body, possibly images and more. Important I just mentioned it, you don't need a service worker for that, you can use that notification API directly from your normal page JS (in my case Chrome didn't allow me to use). We used in our project service workers.
+
+service Worker's ShowNotification('Message', options) method do not show up in the browser
+> Reacting to Notification Interaction by Clicking managed by Service Worker (sw.js), because, a notification is a system feature, it's not displayed in our web application, it's displayed by operating system. hence the user may interact with it when our page isn't even opened, because Service workers are running in the background.
+
+ ----- vapid Keys----
+We used VAPID keys to protect our push messages and make sure we only send them from our application server and no one else can send them. Our backend, that's our Firebased cloud function:  functions/index.js is our backend code.
+> functions > npm install --save web-push --> this will install web push package it will allow us to generate vapid keys and send the push messages themselves.
+> after installation configure package.json file like this:
+    
+    "scripts": {
+        "web-push": "web-push"
+    }
+
+to execute the package:   in functions folder run this command: > npm run web-push generate-vapid-keys
+      Public Key:    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  || app.js -> vapidPublicKey
+      Private Key:   xxxxxxxxxxxxxxxxxxxx
+------ Sending Push Messaged from the SERVER --------- functions/index.js -------

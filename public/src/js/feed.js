@@ -148,7 +148,7 @@ function sendData(){
     // --------------
     console.log('Sent data', res);
     updateUI();
-  }) // ---delete too----
+  }) // ---testing----
   .catch(function(error){
     console.log('Fetching error', error);
   });// ----------------------
