@@ -97,7 +97,7 @@ function updateUI(data) {
   }
 }
 
-var url = 'https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app/posts.json';
+var url = 'https://aehgram-default-rtdb.europe-west1.firebasedatabase.app/posts.json';
 var networkDataReceived = false;
 
 fetch(url)
@@ -123,9 +123,9 @@ if ('indexedDB' in window) {
       }
     });
 }
-// sending data to the backend
-function sendData(){
-  fetch('https://us-central1-uehsgram.cloudfunctions.net/storePostData', {
+
+function sendData() {
+  fetch('https://us-central1-aehgram.cloudfunctions.net/storePostData', { // CHECK it AGAIN
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -135,24 +135,15 @@ function sendData(){
       id: new Date().toISOString(),
       title: titleInput.value,
       location: locationInput.value,
-      image: 'https://media.istockphoto.com/id/1499025854/pl/zdj%C4%99cie/turystyczne-statki-wycieczkowe-w-stambule-turcja.jpg?s=612x612&w=0&k=20&c=r9ZLTTBm_y6hkbnT9SEkjWBJn0LZC7fDFFGbIjdeJ50='
+      image: 'https://media.istockphoto.com/id/540370712/pl/zdj%C4%99cie/warszawa.webp?s=1024x1024&w=is&k=20&c=V2PEg_u7KYCkllsdsy-dH09Xh5Z_VwUY4_HYG0krpxM='
     })
   })
-  .then(function(res){
-    // -----Testing purpose----
-    if (!res.ok) {
-      return res.json().then(err => {
-        console.error('Error response:', err);
-      });
-    }
-    // --------------
-    console.log('Sent data', res);
-    updateUI();
-  }) // ---testing----
-  .catch(function(error){
-    console.log('Fetching error', error);
-  });// ----------------------
+    .then(function(res) {
+      console.log('Sent data', res);
+      updateUI();
+    })
 }
+
 form.addEventListener('submit', function(event) {
   event.preventDefault();
 
@@ -173,7 +164,7 @@ form.addEventListener('submit', function(event) {
         };
         writeData('sync-posts', post)
           .then(function() {
-            return sw.sync.register('sync-new-posts'); // this tag in listening in Service-worker
+            return sw.sync.register('sync-new-posts');
           })
           .then(function() {
             var snackbarContainer = document.querySelector('#confirmation-toast');

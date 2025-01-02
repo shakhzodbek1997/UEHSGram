@@ -125,7 +125,6 @@ to minify
 >> finally 
 firebase deploy
 
-
 Sec - 9 Background Sync. allows you to one important thing, sync your data even if users offline sending it.
 in root folder:  > npm install -g firebase-tools
                  > firebase inti  >are you ready? y > *functions:, *Hosting:
@@ -164,3 +163,40 @@ to execute the package:   in functions folder run this command: > npm run web-pu
       Public Key:    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  || app.js -> vapidPublicKey
       Private Key:   xxxxxxxxxxxxxxxxxxxx
 ------ Sending Push Messaged from the SERVER --------- functions/index.js -------
+
+
+--------- Added Native Device Features -----------
+
+
+----------- Accepting file upload with FIREBASE --------
+> npm install --save formidable   --> Formidable is a nce package which makes it easy for us to access the data enclosed in form data reaching our server.
+ and also we used @google-cloud/storage
+ because admin package doesn't give access to storage of firebase
+ so run this command to instal them:  >functions>  npm install --save formidable @google-cloud/storage
+
+ -------- Automatic Service Worker Management with Workbox -------------
+  Workbox is a very powerful tool which allows you to easily set up Routs with different caching strategies and more. 
+  in root folder run this command first:  
+  > npm install --save-dev workbox-cli@^2
+
+"scripts: {
+  "generate-sw": "workbox generate:sw"
+}
+
+
+----------AEH-GRAM-FIREBASE----------------
+
+Functions URL(storePostData) generated:     https://us-central1-aehgram.cloudfunctions.net/storePostData
+Project Console:                            https://console.firebase.google.com/project/aehgram/overview
+Hosting URL:                                https://aehgram.web.app
+Database:                                   https://aehgram-default-rtdb.europe-west1.firebasedatabase.app
+Storage:                                    gs://aehgram.firebasestorage.app  
+Project ID:                                 aehgram
+name & path of the Key:                     ./aeh-fb-key.json
+=============VAPID KEYS==========================
+Public Key:
+BJ8FhKMsubzfPPTfBdRHe3_qaA52MdhK_w3yKfnlWEvZew0unG-YnmpS4FX549NpW_lDHA1acPrM9u0S_Kv1tuE
+
+Private Key:
+Oen9bJAOBniWMKyNQPhl0-Lu6kU5vz68HX-sqsy_pHs
+=======================================

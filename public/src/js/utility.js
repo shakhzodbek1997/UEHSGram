@@ -49,8 +49,8 @@ function deleteItemFromData(st, id) {
       console.log('Item deleted!');
     });
 }
-
-function urlBase64ToUint8Array(base64String) { // converter urlBase64 (VAPID key) to --> UINT 8 value -->  app.js
+// this functions will convert our URLBase64 VAPID public key to Uint 8 value
+function urlBase64ToUint8Array(base64String) {
   var padding = '='.repeat((4 - base64String.length % 4) % 4);
   var base64 = (base64String + padding)
     .replace(/\-/g, '+')

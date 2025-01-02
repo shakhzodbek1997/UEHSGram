@@ -1,7 +1,7 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/utility.js');
 
-var CACHE_STATIC_NAME = 'static-v22';
+var CACHE_STATIC_NAME = 'static-v24';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 var STATIC_FILES = [
   '/',
@@ -74,7 +74,7 @@ function isInArray(string, array) {
 
 self.addEventListener('fetch', function (event) {
 
-  var url = 'https://uehsgram-default-rtdb.europe-west1.firebasedatabase.app/posts';
+  var url = 'https://aehgram-default-rtdb.europe-west1.firebasedatabase.app/posts';
   if (event.request.url.indexOf(url) > -1) {
     event.respondWith(fetch(event.request)
       .then(function (res) {
@@ -181,34 +181,37 @@ self.addEventListener('fetch', function (event) {
 //   );
 // });
 
-self.addEventListener('sync', function(event) {
+self.addEventListener('sync', function (event) {
   console.log('[Service Worker] Background syncing', event);
   if (event.tag === 'sync-new-posts') {
     console.log('[Service Worker] Syncing new Posts');
     event.waitUntil(
       readAllData('sync-posts')
-        .then(function(data) {
+        .then(function (data) {
           for (var dt of data) {
-            fetch('https://us-central1-uehsgram.cloudfunctions.net/storePostData', {
+            fetch('https://us-central1-aehgram.cloudfunctions.net/storePostData', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
               },
               body: JSON.stringify({
-                id: dt.id,   // getting these data from feed.js
+                id: dt.id,
                 title: dt.title,
                 location: dt.location,
-                image: 'https://media.istockphoto.com/id/1499025854/pl/zdj%C4%99cie/turystyczne-statki-wycieczkowe-w-stambule-turcja.jpg?s=612x612&w=0&k=20&c=r9ZLTTBm_y6hkbnT9SEkjWBJn0LZC7fDFFGbIjdeJ50='
+                image: 'https://media.istockphoto.com/id/540370712/pl/zdj%C4%99cie/warszawa.webp?s=1024x1024&w=is&k=20&c=V2PEg_u7KYCkllsdsy-dH09Xh5Z_VwUY4_HYG0krpxM='
               })
             })
-              .then(function(res) {
+              .then(function (res) {
                 console.log('Sent data', res);
                 if (res.ok) {
-                  deleteItemFromData('sync-posts', dt.id); // Isn't working correctly!
+                  res.json()
+                    .then(function (resData) {
+                      deleteItemFromData('sync-posts', resData.id);
+                    });
                 }
               })
-              .catch(function(err) {
+              .catch(function (err) {
                 console.log('Error while sending data', err);
               });
           }
@@ -217,28 +220,35 @@ self.addEventListener('sync', function(event) {
     );
   }
 });
-// --- Reacting to Notification-----
-self.addEventListener('notificationclick', function(event) {
+
+self.addEventListener('notificationclick', function (event) {
   var notification = event.notification;
-  var action = event.action;
+  var action = event.action;  // Action clicked by the user
 
-  console.log(notification);
+  console.log('Notification clicked:', notification);
+  console.log('Action chosen:', action);
 
-  if (action === 'confirm') { // app.js -> action ID: 'confirm' or 'cancel'
-    console.log('Confirm was chosen');  // okay -> confirm was chosen
-    notification.close();
-  } else {
-    console.log(action);       // action name is cancel --> cancel
+  if (action === 'confirm') {
+    console.log('Confirm was chosen');
+    notification.close();  // Close the notification for "Okay" button
+  } else if (action === 'cancel'){
+    console.log('Cancel action was chosen', action);
+    notification.close(); //Close the notification for "Cancel" button
+  }else{
+    // Default action: clicking the notification itself
+    console.log('Notification itself clicked');
     event.waitUntil(
       clients.matchAll()
-        .then(function(clis){
-          var client = clis.find(function(c){
+        .then(function (clis) {
+          var client = clis.find(function (c) {
             return c.visibilityState === 'visible';
           });
-          if(client !== undefined){
+
+          if (client) {
+            console.log('Refreshing existing client to index.html');
             client.navigate(notification.data.url);
             client.focus();
-          }else {
+          } else {
             clients.openWindow(notification.data.url);
           }
           notification.close();
@@ -246,30 +256,36 @@ self.addEventListener('notificationclick', function(event) {
     );
   }
 });
-// ------- closing Notification ------
-self.addEventListener('notificationclose', function(event) {
+
+self.addEventListener('notificationclose', function (event) {
   console.log('Notification was closed', event);
 });
 
-self.addEventListener('push', function(event){
-  console.log('Push Notification Received', event);
 
-  var data = {title: 'New!', content: 'Something new Happened!', openUrl: '/'};
+self.addEventListener('push', function (event) {
+  console.log('Push Notification received', event);
 
-  if(event.data){
+  var data = { title: 'New!', content: 'Something new happened!', openUrl: '/' };
+
+  if (event.data) {
     data = JSON.parse(event.data.text());
   }
+
+  console.log('Notification Data!!!!:', data)
 
   var options = {
     body: data.content,
     icon: '/src/images/icons/app-icon-96x96.png',
-    badge:'/src/images/icons/app-icon-96x96.png',
+    badge: '/src/images/icons/app-icon-96x96.png',
     data: {
-      url: data.openUrl 
+      url: data.openUrl
     }
-  }
+  };
 
   event.waitUntil(
-    self.registration.showNotification(data.title, options) // real message coming in whenever we create a post
-  )
+    self.registration.showNotification(data.title, options)
+  );
 });
+
+
+
