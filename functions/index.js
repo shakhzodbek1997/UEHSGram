@@ -1,7 +1,7 @@
-const {onRequest} = require('firebase-functions/v2/https');
+const { onRequest } = require('firebase-functions/v2/https');
 const logger = require('firebase-functions/logger');
 const admin = require('firebase-admin');
-const cors = require('cors')({origin: true});
+const cors = require('cors')({ origin: true });
 const webpush = require('web-push');
 
 // Load service account key
@@ -22,8 +22,8 @@ exports.storePostData = onRequest((request, response) => {
   cors(request, response, () => {
     // Validate the request body
     if (!request.body.id || !request.body.title || !request.body.location || !request.body.image) {
-      logger.warn('Invalid request data received', {requestBody: request.body});
-      response.status(400).json({error: 'Invalid request data'});
+      logger.warn('Invalid request data received', { requestBody: request.body });
+      response.status(400).json({ error: 'Invalid request data' });
       return;
     }
 
@@ -42,7 +42,7 @@ exports.storePostData = onRequest((request, response) => {
         );
         return admin.database().ref('subscriptions').once('value');
       })
-      .then((subscriptions)=> {
+      .then((subscriptions) => {
         subscriptions.forEach((sub) => {
           const pushConfig = {
             endpoint: sub.val().endpoint,
@@ -53,20 +53,20 @@ exports.storePostData = onRequest((request, response) => {
           };
 
           webpush.sendNotification(pushConfig, JSON.stringify({
-            title: 'New Post', 
+            title: 'New Post',
             content: 'New Post added!',
-            openUrl: '/index.html'  // when click notification open index.html
+            openUrl: '/'
           }))
             .catch((err) => {
-              console.log('Error sending notification', err);
+              console.log(err);
             })
         });
-        logger.info('Data stored successfully', {id: request.body.id});
-        response.status(201).json({message: 'Data stored', id: request.body.id});
+        logger.info('Data stored successfully', { id: request.body.id });
+        response.status(201).json({ message: 'Data stored', id: request.body.id });
       })
       .catch((err) => {
-        logger.error('Error storing data', {error: err});
-        response.status(500).json({error: 'Failed to store data'});
+        logger.error('Error storing data', { error: err });
+        response.status(500).json({ error: 'Failed to store data' });
       });
   });
 });

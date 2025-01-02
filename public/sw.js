@@ -223,20 +223,15 @@ self.addEventListener('sync', function (event) {
 
 self.addEventListener('notificationclick', function (event) {
   var notification = event.notification;
-  var action = event.action;  // Action clicked by the user
+  var action = event.action;
 
-  console.log('Notification clicked:', notification);
-  console.log('Action chosen:', action);
+  console.log(notification);
 
   if (action === 'confirm') {
     console.log('Confirm was chosen');
-    notification.close();  // Close the notification for "Okay" button
-  } else if (action === 'cancel'){
-    console.log('Cancel action was chosen', action);
-    notification.close(); //Close the notification for "Cancel" button
-  }else{
-    // Default action: clicking the notification itself
-    console.log('Notification itself clicked');
+    notification.close();
+  } else {
+    console.log(action);
     event.waitUntil(
       clients.matchAll()
         .then(function (clis) {
@@ -244,8 +239,7 @@ self.addEventListener('notificationclick', function (event) {
             return c.visibilityState === 'visible';
           });
 
-          if (client) {
-            console.log('Refreshing existing client to index.html');
+          if (client !== undefined) {
             client.navigate(notification.data.url);
             client.focus();
           } else {
@@ -261,7 +255,6 @@ self.addEventListener('notificationclose', function (event) {
   console.log('Notification was closed', event);
 });
 
-
 self.addEventListener('push', function (event) {
   console.log('Push Notification received', event);
 
@@ -270,8 +263,6 @@ self.addEventListener('push', function (event) {
   if (event.data) {
     data = JSON.parse(event.data.text());
   }
-
-  console.log('Notification Data!!!!:', data)
 
   var options = {
     body: data.content,
